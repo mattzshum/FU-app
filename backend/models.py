@@ -112,9 +112,11 @@ class Topic(db.Model):
     '''
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    description = Column(String, nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name, description):
         self.name = name
+        self.description = description
 
     def insert(self):
         db.session.add(self)
@@ -130,7 +132,8 @@ class Topic(db.Model):
     def format(self):
         return{
             'id':self.id,
-            'name':self.name
+            'name':self.name,
+            'description':self.description
         }
 
 class Post(db.Model):
