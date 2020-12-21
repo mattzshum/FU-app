@@ -5,11 +5,7 @@ import json
 from flask_cors import CORS 
 import babel
 
-<<<<<<< Updated upstream
 from models import User, Location, Topic, Post, setup_db, Comment
-=======
-from models import User, Location, Topic, Post, Comment
->>>>>>> Stashed changes
 
 # TODO:
 '''
