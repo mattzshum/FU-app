@@ -147,3 +147,80 @@ def create_app(test_config=None):
             print(E)
             abort(422)
     
+    '''
+    -----location()
+
+    ---paramaters
+    none
+
+    ---description
+    queueries for all locations
+    '''
+    @app.route('/location', methods=['GET'])
+    def location():
+        try:
+            locations = Location.query.order_by(Location.id).all()
+            if location == None:
+                print('Dont work')
+                abort(404)
+            
+            return jsonify({
+                'success':True,
+                'location':[location.format() for location in locations],
+                'total_location':len(location)
+            })
+        except Exception as E:
+            print('Dont work')
+            abort(422)
+
+    '''
+    -----specific_location(location_id)
+
+    ---paramaters
+    location being searched for
+
+    ---description
+    queueries looking for a specific location
+    '''
+    @app.route('/location/<int:location_id>', methods=['GET'])
+    def specific_location(location_id):
+        try:
+            s_location = Location.query.filter(Location.id = location_id).one_or_none()
+            if s_location == None:
+                print('dont work')
+                abort(404)
+            
+            return jsonify({
+                'success':True,
+                's_location':s_location.format()
+            })
+        except Exception as E:
+            print('Dont work')
+            abort(422)
+    
+    '''
+    -----create_location(void)
+
+    ---paramaters
+    none
+
+    ---description
+    creates a new specific location
+    '''
+    @app.route('/location', methods=['POSTS'])
+    def create_location():
+        body = request.get_json()
+        name = body.get('name', None)
+        try:
+            location = Location(name)
+            location.insert()
+            return jsonify({
+                'success':True,
+                'created':location
+            })
+        except Exception as E:
+            print('Dont work')
+            abort(422)
+
+    '''
+    
