@@ -97,7 +97,7 @@ def create_app(test_config=None):
     ---description
     creates a user and returns json object [success, user_id]
     '''
-    @app.reoute('/users', methods=['POST'])
+    @app.route('/users', methods=['POST'])
     def create_user():
         body = request.get_json()
 
@@ -160,13 +160,13 @@ def create_app(test_config=None):
     def location():
         try:
             locations = Location.query.order_by(Location.id).all()
-            if location == None:
+            if locations == None:
                 print('Dont work')
                 abort(404)
             
             return jsonify({
                 'success':True,
-                'location':[location.format() for location in locations],
+                'location':[locations.format() for Location in locations],
                 'total_location':len(location)
             })
         except Exception as E:
@@ -185,7 +185,7 @@ def create_app(test_config=None):
     @app.route('/location/<int:location_id>', methods=['GET'])
     def specific_location(location_id):
         try:
-            s_location = Location.query.filter(Location.id = location_id).one_or_none()
+            s_location = Location.query.filter(Location.id == location_id).one_or_none()
             if s_location == None:
                 print('dont work')
                 abort(404)
@@ -207,7 +207,7 @@ def create_app(test_config=None):
     ---description
     creates a new specific location
     '''
-    @app.route('/location', methods=['POSTS'])
+    @app.route('/location', methods=['POST'])
     def create_location():
         body = request.get_json()
         name = body.get('name', None)
@@ -216,11 +216,125 @@ def create_app(test_config=None):
             location.insert()
             return jsonify({
                 'success':True,
-                'created':location
+                'created':location_id
             })
         except Exception as E:
             print('Dont work')
             abort(422)
 
     '''
+    -----delete_location(location_id)
+
+    ---paramaters
+    location_id thats deleted
+
+    ---description
+    deletes a specific location
+    '''
+    @app.route('location/<int:location_id>', methods=['DELETE'])
+    def delete_location(location_id):
+        try:
+            location = Location.query.filter(Location.id==location_id).one_or_none()
+            if location:
+                abort(404)
+            return jsonify({
+                'success':True,
+                'deleted':location_id
+            })
+        except Exception as E:
+            print('Dont work')
+            abort(422)
     
+    '''
+    -----topic()
+
+    ---paramaters
+    none
+
+    ---description
+    queries for all ltopics
+    '''
+    @app.route('/topic',methods=['GET'])
+    def topic():
+        try:
+            topics = Topic.query.order_by(Topic.id).all()
+            if topic == None:
+                print('dont work')
+                abort(404)
+            return jsonify({
+                'success':True,
+                'current_topic':[Topic.format() for Topic in topics],
+                'total_topic':len(topics)
+            })
+    
+    '''
+    -----specific_topic(topic_id)
+
+    ---paramaters
+    topic_id
+
+    ---description
+    searches for specific topic_id
+    '''
+    @app.route('/topic/int:<topic_id>', methods=['GET'])
+    def specific_topic(topic_id):
+        try:
+            s_topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
+            if s_topic == None:
+                print('Not there')
+                abort(404)
+            return jsonify({
+                'success':True,
+                's_topic':s_topic.format()
+            })
+        except Exception as E:
+            print('dont work')
+            abort(422)
+
+    '''
+    -----create_topic(void)
+
+    ---paramaters
+    none
+
+    ---description
+    creates a new topic
+    '''
+    @app.route('/topic',method=['POST'])
+    def create_topic():
+        body = request.get_json()
+        t_name = body.get('name', None)
+        t_description = body.get('description',None)
+        try:
+            topic = Topic(name = t_name, description = t_description)
+            topic.insert()
+            return jsonify({
+                'success':True,
+                'created':topic_id
+            })
+        except Exception as E:
+            print('Dont work')
+            abort(422)
+
+    '''
+    -----delete_topic(topic_id)
+
+    ---paramters
+    topic_id
+
+    --description
+    deletes a specific topic
+    '''
+    @app.route('topic/<int:topic_id>',method=['DELETE'])
+    def delete_topic(topic_id):
+        try:
+            topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
+            if topic:
+                abort(404)
+            return jsonify({
+                'success':True,
+                'deleted':topic_id
+            })
+        except Exception as E:
+            print('Dont work')
+            abort(422)
