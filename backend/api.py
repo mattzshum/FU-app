@@ -5,7 +5,7 @@ import json
 from flask_cors import CORS 
 import babel
 
-from models import User, Location, Topic, Post
+from models import User, Location, Topic, Post, setup_db, Comment
 
 # TODO:
 '''
@@ -29,7 +29,7 @@ def paginate_users(request, selection):
     start = (page-1) * USERS_PER_PAGE
     end = start + USERS_PER_PAGE
 
-    users = [users.format() for user in selection]
+    users = [user.format() for user in selection]
     current_users = users[start:end]
     return current_users
 
@@ -108,16 +108,18 @@ def create_app(test_config=None):
         new_f_name = body.get('f_name', None)
         new_l_name = body.get('l_name', None)
         new_u_name = body.get('u_name', None)
+        new_phone = body.get('phone', None)
 
         try:
             user = User(f_name = new_f_name,
                         l_name = new_l_name,
-                        u_name = new_u_name)
+                        u_name = new_u_name,
+                        phone=new_phone)
             user.insert()
 
             return jsonify({
                 'success':True,
-                'created':user_id
+                'created':user.format()
             })
         except Exception as E:
             print(E)
@@ -220,11 +222,7 @@ def create_app(test_config=None):
             location.insert()
             return jsonify({
                 'success':True,
-<<<<<<< HEAD
-                'created':location_id
-=======
                 'created':location.format()
->>>>>>> 71482d3dcdf7434787d8afd5aba988675928742e
             })
         except Exception as E:
             print('Dont work')
@@ -275,7 +273,9 @@ def create_app(test_config=None):
                 'current_topic':[Topic.format() for Topic in topics],
                 'total_topic':len(topics)
             })
-    
+        except Exception as E:
+            print('Dont Work')
+            abort(422)
     '''
     -----specific_topic(topic_id)
 
@@ -319,7 +319,7 @@ def create_app(test_config=None):
             topic.insert()
             return jsonify({
                 'success':True,
-                'created':topic_id
+                'created':topic.format()
             })
         except Exception as E:
             print('Dont work')
@@ -347,7 +347,9 @@ def create_app(test_config=None):
         except Exception as E:
             print('Dont work')
             abort(422)
-=======
+
+
+    '''
     -----posts()
 
     ---parameters
@@ -382,7 +384,7 @@ def create_app(test_config=None):
     queries and returns requested post
     '''
     @app.route('/posts/<int:post_id>', methods=['GET'])
-    def posts(post_id):
+    def specific_post(post_id):
         try:
             post = Post.query.filter(Post.id == post_id).one_or_none()
 
@@ -421,7 +423,7 @@ def create_app(test_config=None):
             post = Post(title, post_body, num_fu, tag, user_id)
             post.insert()
 
-            return jsonfiy({
+            return jsonify({
                 'success':True,
                 'created':post.format()
             })
@@ -567,4 +569,3 @@ def create_app(test_config=None):
             abort(422)
             print('Error Code 422 {E}')
         
->>>>>>> 71482d3dcdf7434787d8afd5aba988675928742e
