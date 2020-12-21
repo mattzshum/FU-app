@@ -10,6 +10,10 @@ from models import User, Location, Topic, Post
 # TODO:
 '''
 -- CRUD for all endpoints
+-Matt: Comment, Post APIs
+-Brady: Topic APIs
+
+-- UPDATE APIs to account for foreign keys on creation
 '''
 
 # Changelog:
@@ -216,11 +220,229 @@ def create_app(test_config=None):
             location.insert()
             return jsonify({
                 'success':True,
-                'created':location
+                'created':location.format()
             })
         except Exception as E:
             print('Dont work')
             abort(422)
 
     '''
+    -----posts()
+
+    ---parameters
+
+    --description
+    queries and returns all topics sorted by ID
+    '''
+    @app.route('/posts', methods=['GET'])
+    def posts():
+        try:
+            posts = Post.query.order_by(Post.id).all()
+
+            if posts is None:
+                print('Error Fetching Posts')
+                abort(404)
+            
+            return jsonify({
+                'success':True,
+                'data':[post.format() for post in posts]
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
     
+    '''
+    -----specific_post()
+
+    ---parameters
+    post_id: primary key of post we are to query for
+
+    --description
+    queries and returns requested post
+    '''
+    @app.route('/posts/<int:post_id>', methods=['GET'])
+    def posts(post_id):
+        try:
+            post = Post.query.filter(Post.id == post_id).one_or_none()
+
+            if post is None:
+                abort(404)
+                print('Error Fetching Specific Post')
+            
+            return jsonify({
+                'success':True,
+                'data':post.format()
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+    
+    '''
+    -----create_post()
+
+    ---parameters
+    none
+
+    --description
+    retrieves information from REQUEST and creates a new Post
+    '''
+    @app.route('/posts', methods=['POST'])
+    def create_post():
+        body = request.get_json()
+
+        title = body.get('title', None)
+        post_body = body.get('body', None)
+        num_fu = body.get('num_fu', None)
+        tag = body.get('tag', None)
+        user_id = body.get('user_id', None)
+
+        try:
+            post = Post(title, post_body, num_fu, tag, user_id)
+            post.insert()
+
+            return jsonfiy({
+                'success':True,
+                'created':post.format()
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+
+    '''
+    -----delete_post()
+
+    ---parameters
+    post_id: primary key of post to be deleted
+
+    --description
+    queries for specific post and deletes that row from a table
+    '''
+    @app.route('/posts/<int:post_id>', methods=['DELETE'])
+    def delete_post(post_id):
+        try:
+            post = Post.query.filter(Post.id == post_id).one_or_none()
+
+            if post is None:
+                abort(404)
+                print('Error fetching post')
+            
+            post.delete()
+
+            return jsonify({
+                'success':True,
+                'deleted':post_id
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+    
+    '''
+    -----comments()
+    
+    --parameters
+    none
+
+    --description
+    queries for all comments
+    '''
+    @app.route('/comments', methods=['GET'])
+    def comments():
+        try:
+            comments = Comment.query.order_by(Comment.id).all()
+
+            if comments is None:
+                abort(404)
+                print('Error Fetching Comments')
+            
+            return jsonify({
+                'success':True,
+                'data':[comment.format() for comment in comments]
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+    
+    '''
+    -----specific_comment(comment_id)
+
+    --parameters
+    comment_id: primary key of comment we are querying for
+
+    --description
+    queries for specific comment and returns it
+    '''
+    @app.route('/comments/<int:comment_id>', methods=['GET'])
+    def specific_comment(comment_id):
+        try:
+            comment = Comment.query.filter(Comment.id == comment_id).one_or_none()
+
+            if comment is None:
+                abort(404)
+                print('Error Fetching Comment {comment_id}')
+            
+            return jsonify({
+                'success':True,
+                'data':comment.format()
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+    
+    '''
+    -----create_comment()
+
+    --parameters
+    none
+
+    --description
+    takes input from frontend and converts it to data row
+    '''
+    @app.route('/comments', methods=['POST'])
+    def create_comment():
+        body = request.get_json()
+
+        comment_body = body.get('body', None)
+        prev = body.get('prev', None)
+        post_id = body.get('post_id', None)
+        user_id = body.get('user_id', None)
+
+        try:
+            comment = Comment(comment_body, prev, post_id, user_id)
+            comment.insert()
+            
+            return jsonify({
+                'success':True,
+                'created':comment.format()
+            })
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+        
+    '''
+    -----delete_comment(comment_id)
+
+    --parameters
+    comment_id: primary key of comment we are to delete
+
+    --description
+    queries for specific comment and deletes from Comment
+    '''
+    @app.route('/comments/<int:comment_id>', methods=['DELETE'])
+    def delete_comment(comment_id):
+        try:
+            comment = Comment.query.filter(Comment.id == comment_id).one_or_none()
+
+            if comment is None:
+                abort(404)
+                print('Could not delete comment DNE')
+            
+            comment.delete()
+
+            return jsonify({
+                'success':True,
+                'deleted':comment_id
+            })    
+        except Exception as E:
+            abort(422)
+            print('Error Code 422 {E}')
+        

@@ -193,14 +193,13 @@ class Comment(db.Model):
     __tablename__='Comment'
     
     id = Column(Integer, primary_key=True)
-    comment = Column(String, nullable=False)
+    body = Column(String, nullable=False)
     prev = Column(Integer)
     post_id = Column(Integer, ForeignKey('Post.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     
-    def __init__(self, id, comment, prev, post_id, user_id):
-        self.id = id
-        self.comment = comment
+    def __init__(self, body, prev, post_id, user_id):
+        self.body = body
         self.prev = prev
         self.post_id = post_id
         self.user_id = user_id
@@ -217,8 +216,7 @@ class Comment(db.Model):
     
     def format(self):
         return {
-            'id':self.id,
-            'comment':self.comment,
+            'body':self.body,
             'prev':self.prev,
             'post_id':self.post_id,
             'user_id':self.user_id
