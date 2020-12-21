@@ -37,6 +37,11 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     migrate = Migrate(app, db)
 
+topic_post_association_table = Table('t_p', Base.metadata,
+    Column('Topic_id', Integer, ForeignKey('Topic.id')),
+    Column('Post_id', Integer, ForeignKey('Post.id'))
+)
+
 class User(db.Model):
     __tablename__='User'
     '''
@@ -48,11 +53,16 @@ class User(db.Model):
     f_name = Column(String(150), nullable=False)
     l_name = Column(String(150), nullable=False)
     u_name = Column(String(150), nullable=False)
+    phone = Column(String(15), nullable=False)
+    user_post = db.relationship('U_P',backref='Post',lazy=True)
+    user_comment = db.relationship('U_C',backref='Comment',lazy=True)
 
-    def __init__(self, f_name, l_name, u_name):
+
+    def __init__(self, f_name, l_name, u_name, phone):
         self.f_name = f_name
         self.l_name = l_name
         self.u_name = u_name
+        self.phone = phone
     
     def insert(self):
         db.session.add(self)
@@ -70,7 +80,8 @@ class User(db.Model):
             'id':self.id,
             'f_name':self.f_name,
             'l_name':self.l_name,
-            'u_name':self.u_name
+            'u_name':self.u_name,
+            'phone':self.phone
         }
 
 class Location(db.Model):
@@ -148,12 +159,15 @@ class Post(db.Model):
     body = Column(String, nullable=False)
     num_fu = Column(Integer, nullable=False)
     tag = Column(Array(String))
+    user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
+    comment_id = db.relationship('P_C',backref='Comment',lazy=True)
 
-    def __init__(self, title, body, num_fu, tag):
+    def __init__(self, title, body, num_fu, tag, user_id):
         self.title = title
         self.body = body
         self.num_fu = num_fu
         self.tag = tag
+        self.user_id = user_id
     
     def insert(self):
         db.session.add(self)
@@ -171,5 +185,41 @@ class Post(db.Model):
             'title':self.title,
             'body':self.body,
             'num_fu':self.num_fu,
-            'tag':self.tag
+            'tag':self.tag,
+            'user_id':self.user_id
+        }
+
+class Comment(db.Model):
+    __tablename__='Comment'
+    
+    id = Column(Integer, primary_key=True)
+    comment = Column(String, nullable=False)
+    prev = Column(Integer)
+    post_id = Column(Integer, ForeignKey('Post.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
+    
+    def __init__(self, id, comment, prev, post_id, user_id):
+        self.id = id
+        self.comment = comment
+        self.prev = prev
+        self.post_id = post_id
+        self.user_id = user_id
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def update(self):
+        db.session.commit()
+        
+    def delete(self):
+        db.session.delete(self)
+    
+    def format(self):
+        return {
+            'id':self.id,
+            'comment':self.comment,
+            'prev':self.prev,
+            'post_id':self.post_id,
+            'user_id':self.user_id
         }
