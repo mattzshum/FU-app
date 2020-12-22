@@ -368,11 +368,12 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'data':[post.format() for post in posts]
+                'data':[post.format() for post in posts],
+                'total_posts':len(posts)
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
     
     '''
     -----specific_post()
@@ -398,7 +399,7 @@ def create_app(test_config=None):
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
     
     '''
     -----create_post()
@@ -429,7 +430,7 @@ def create_app(test_config=None):
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
 
     '''
     -----delete_post()
@@ -457,7 +458,7 @@ def create_app(test_config=None):
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
     
     '''
     -----comments()
@@ -479,11 +480,12 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'data':[comment.format() for comment in comments]
+                'data':[comment.format() for comment in comments],
+                'total_comments':len(comments)
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
     
     '''
     -----specific_comment(comment_id)
@@ -509,7 +511,7 @@ def create_app(test_config=None):
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
     
     '''
     -----create_comment()
@@ -539,7 +541,7 @@ def create_app(test_config=None):
             })
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
         
     '''
     -----delete_comment(comment_id)
@@ -567,5 +569,5 @@ def create_app(test_config=None):
             })    
         except Exception as E:
             abort(422)
-            print('Error Code 422 {E}')
+            print(f'Error Code 422 {E}')
         
