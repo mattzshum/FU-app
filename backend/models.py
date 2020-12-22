@@ -165,7 +165,7 @@ class Post(db.Model):
     title = Column(String(150), nullable=False)
     body = Column(String, nullable=False)
     num_fu = Column(Integer, nullable=False)
-    tag = Column(Array(String))
+    tag = Column(ARRAY(String))
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     comment_id = db.relationship('P_C',backref='Comment',lazy=True)
 
