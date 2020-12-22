@@ -18,7 +18,7 @@ Create, read, update, delete
 '''
 
 # Changelog:
-@ -29,7 +26,7 @@ def paginate_users(request, selection):
+def paginate_users(request, selection):
     start = (page-1) * USERS_PER_PAGE
     end = start + USERS_PER_PAGE
 
@@ -27,21 +27,16 @@ Create, read, update, delete
     current_users = users[start:end]
     return current_users
 
-@ -75,7 +72,7 @@ def create_app(test_config=None):
-    ---description
-    retrieves a specific user and displays info
+def create_app(test_config=None):
     '''
-    @app.route('/users/<int:user_id>', methods=['GET'])
-    @app.route('/users/<int:user_id>', methods=['GET']) #linkedin.com/matthew-shum-19a766179
-    def specific_user(user_id):
-        try:
-            print(f'CURRENTLY SEARCHING FOR {user_id}')
-@ -101,25 +98,23 @@ def create_app(test_config=None):
-    ---description
-    creates a user and returns json object [success, user_id]
+    Home of the API logics
     '''
+    app = Flask(__name__)
+    setup_db(app)
+    CORS(app)
+
+
     @app.route('/users', methods=['POST'])
-    @app.reoute('/users', methods=['POST'])
     def create_user():
         body = request.get_json()
 
@@ -55,17 +50,14 @@ Create, read, update, delete
                         l_name = new_l_name,
                         u_name = new_u_name,
                         phone=new_phone)
-                        u_name = new_u_name)
             user.insert()
 
             return jsonify({
                 'success':True,
-                'created':user.format()
+                'created':user.format(),
                 'created':user_id
             })
         except Exception as E:
-            print(E)
-@ -153,421 +148,20 @@ def create_app(test_config=None):
             print(E)
             abort(422)
     
@@ -145,7 +137,6 @@ Create, read, update, delete
             abort(422)
 
     '''
-<<<<<<< HEAD
     -----delete_location(location_id)
 
     ---paramaters
@@ -154,7 +145,7 @@ Create, read, update, delete
     ---description
     deletes a specific location
     '''
-    @app.route('location/<int:location_id>', methods=['DELETE'])
+    @app.route('/location/<int:location_id>', methods=['DELETE'])
     def delete_location(location_id):
         try:
             location = Location.query.filter(Location.id==location_id).one_or_none()
@@ -167,21 +158,6 @@ Create, read, update, delete
         except Exception as E:
             print('Dont work')
             abort(422)
-    @app.errorhandler(404)
-    def not_found(error):
-      return jsonify({
-        'success':False,
-        'error':404,
-        'message':'Not Found'
-      }), 404
-
-    @app.errorhandler(422)
-    def unprocessable(error):
-      return jsonify({
-        'success':False,
-        'error':422,
-        'message':'Not Processable'
-      }), 422
     
     '''
     -----topic()
@@ -240,7 +216,7 @@ Create, read, update, delete
     ---description
     creates a new topic
     '''
-    @app.route('/topic',method=['POST'])
+    @app.route('/topic',methods=['POST'])
     def create_topic():
         body = request.get_json()
         t_name = body.get('name', None)
@@ -265,7 +241,7 @@ Create, read, update, delete
     --description
     deletes a specific topic
     '''
-    @app.route('topic/<int:topic_id>',method=['DELETE'])
+    @app.route('/topic/<int:topic_id>',methods=['DELETE'])
     def delete_topic(topic_id):
         try:
             topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
@@ -501,5 +477,21 @@ Create, read, update, delete
         except Exception as E:
             abort(422)
             print(f'Error Code 422 {E}')
+
+    @app.errorhandler(404)
+    def not_found(error):
+      return jsonify({
+        'success':False,
+        'error':404,
+        'message':'Not Found'
+      }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+      return jsonify({
+        'success':False,
+        'error':422,
+        'message':'Not Processable'
+      }), 422
         
     return app
