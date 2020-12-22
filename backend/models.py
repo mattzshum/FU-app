@@ -1,9 +1,12 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine, ForeignKey, Float, ARRAY, TIMESTAMP, Table, Base
+from sqlalchemy import Column, String, Integer, create_engine, ForeignKey, Float, ARRAY, TIMESTAMP, Table, MetaData
 import json
 from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
+
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 # TODO:
@@ -17,6 +20,9 @@ from flask_migrate import Migrate
     -- Star Schema Instantiation
 '''
 
+metadata = MetaData()
+Base = declarative_base(metadata=metadata)
+
 db_path = {
     'dialect':'postgresql',
     'username':'postgres',
@@ -25,7 +31,8 @@ db_path = {
     'database_name':'fu-app'
 }
 database_path = f'{db_path["dialect"]}://{db_path["username"]}:{db_path["password"]}@{db_path["host"]}/{db_path["database_name"]}'
-db = SQLAlchemy()
+db = SQLAlchemy(metadata=metadata)
+
 
 def setup_db(app, database_path=database_path):
     '''

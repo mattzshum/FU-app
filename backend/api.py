@@ -14,94 +14,34 @@ from models import User, Location, Topic, Post, setup_db, Comment
 -Brady: Topic APIs
 
 -- UPDATE APIs to account for foreign keys on creation
+Create, read, update, delete
 '''
 
 # Changelog:
-'''
---Version 0.1.0 F*ck You
-    -- CRUD
-'''
-
-USERS_PER_PAGE = 10 
-
-def paginate_users(request, selection):
-    page = request.args.get('page', 1, type=int)
+@ -29,7 +26,7 @@ def paginate_users(request, selection):
     start = (page-1) * USERS_PER_PAGE
     end = start + USERS_PER_PAGE
 
     users = [user.format() for user in selection]
+    users = [users.format() for user in selection]
     current_users = users[start:end]
     return current_users
 
-def create_app(test_config=None):
-    '''
-    API LOGICS
-    '''
-    app = Flask(__name__)
-    setup_db(app)
-    CORS(app)
-
-    '''
-    -----users()
-    
-    ---paramters
-    none
-
-    ---description
-    queries for all users and paginates them by request
-    '''
-    @app.route('/users', methods=['GET'])
-    def users():
-        users = User.query.order_by(User.id).all()
-        current_users = paginate_users(request, users)
-
-        if len(current_users) == 0:
-            print('NO SEARCH RESULTS')
-            abort(404)
-        
-        return jsonify({
-            'success':True,
-            'users':current_users,
-            'total_users':len(users)
-        })
-    
-
-    '''
-    -----specific_users
-    
-    ---parameters
-    user_id - the primary key of the user we are displaying
-    
+@ -75,7 +72,7 @@ def create_app(test_config=None):
     ---description
     retrieves a specific user and displays info
     '''
     @app.route('/users/<int:user_id>', methods=['GET'])
+    @app.route('/users/<int:user_id>', methods=['GET']) #linkedin.com/matthew-shum-19a766179
     def specific_user(user_id):
         try:
             print(f'CURRENTLY SEARCHING FOR {user_id}')
-            user = User.query.filter(User.id == user_id).one_or_none()
-
-            if user is None:
-                abort(404)
-            
-            return jsonify({
-                'success':True,
-                'data':user.format()
-            })
-        except Exception as E:
-            print(E)
-            abort(422)
-    
-    '''
-    -----create_user()
-
-    ---paramters
-    none
-
+@ -101,25 +98,23 @@ def create_app(test_config=None):
     ---description
     creates a user and returns json object [success, user_id]
     '''
     @app.route('/users', methods=['POST'])
+    @app.reoute('/users', methods=['POST'])
     def create_user():
         body = request.get_json()
 
@@ -115,41 +55,17 @@ def create_app(test_config=None):
                         l_name = new_l_name,
                         u_name = new_u_name,
                         phone=new_phone)
+                        u_name = new_u_name)
             user.insert()
 
             return jsonify({
                 'success':True,
                 'created':user.format()
+                'created':user_id
             })
         except Exception as E:
             print(E)
-            abort(422)
-
-
-    '''
-    -----delete_user()
-
-    ---paramters
-    user_id - primary key of user we are to remove from db
-
-    ---description
-    takes id of user and removes them from table USER
-    '''
-    @app.route('users/<int:user_id>', methods=['DELETE'])
-    def delete_user(user_id):
-        try:
-            target_user = User.query.filter(User.id == user_id).one_or_none()
-
-            if target_user == None:
-                abort(404)
-
-            target_user.delete()
-
-            return jsonify({
-                'success':True,
-                'deleted':user_id
-            })
-        except Exception as E:
+@ -153,421 +148,20 @@ def create_app(test_config=None):
             print(E)
             abort(422)
     
@@ -251,6 +167,21 @@ def create_app(test_config=None):
         except Exception as E:
             print('Dont work')
             abort(422)
+    @app.errorhandler(404)
+    def not_found(error):
+      return jsonify({
+        'success':False,
+        'error':404,
+        'message':'Not Found'
+      }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+      return jsonify({
+        'success':False,
+        'error':422,
+        'message':'Not Processable'
+      }), 422
     
     '''
     -----topic()
@@ -571,3 +502,4 @@ def create_app(test_config=None):
             abort(422)
             print(f'Error Code 422 {E}')
         
+    return app
