@@ -26,7 +26,7 @@ Base = declarative_base(metadata=metadata)
 db_path = {
     'dialect':'postgresql',
     'username':'postgres',
-    'password':'8949',
+    'password':'1657',
     'host':'localhost:5432',
     'database_name':'fu-app'
 }
