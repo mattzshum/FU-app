@@ -84,7 +84,7 @@ def create_app(test_config=None):
                 'total_location':len(location)
             })
         except Exception as E:
-            print('Dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
 
     '''
@@ -109,7 +109,7 @@ def create_app(test_config=None):
                 's_location':s_location.format()
             })
         except Exception as E:
-            print('Dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
     
     '''
@@ -133,7 +133,7 @@ def create_app(test_config=None):
                 'created':location.format()
             })
         except Exception as E:
-            print('Dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
 
     '''
@@ -156,7 +156,7 @@ def create_app(test_config=None):
                 'deleted':location_id
             })
         except Exception as E:
-            print('Dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
     
     '''
@@ -181,7 +181,7 @@ def create_app(test_config=None):
                 'total_topic':len(topics)
             })
         except Exception as E:
-            print('Dont Work')
+            print(f'Error Code 422 {E}')
             abort(422)
     '''
     -----specific_topic(topic_id)
@@ -204,7 +204,7 @@ def create_app(test_config=None):
                 's_topic':s_topic.format()
             })
         except Exception as E:
-            print('dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
 
     '''
@@ -229,7 +229,7 @@ def create_app(test_config=None):
                 'created':topic.format()
             })
         except Exception as E:
-            print('Dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
 
     '''
@@ -252,7 +252,7 @@ def create_app(test_config=None):
                 'deleted':topic_id
             })
         except Exception as E:
-            print('Dont work')
+            print(f'Error Code 422 {E}')
             abort(422)
 
 
