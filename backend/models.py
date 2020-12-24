@@ -8,6 +8,8 @@ from flask_migrate import Migrate
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+from passwords import Passwords
+
 
 # TODO:
 '''
@@ -26,7 +28,7 @@ Base = declarative_base(metadata=metadata)
 db_path = {
     'dialect':'postgresql',
     'username':'postgres',
-    'password':'1657',
+    'password':Passwords.shum_password,
     'host':'localhost:5432',
     'database_name':'fu-app'
 }
