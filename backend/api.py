@@ -17,8 +17,11 @@ from models import User, Location, Topic, Post, setup_db, Comment
 Create, read, update, delete
 '''
 
+USERS_PER_PAGE = 10
+
 # Changelog:
 def paginate_users(request, selection):
+    page = request.args.get('page', 1, type=int)
     start = (page-1) * USERS_PER_PAGE
     end = start + USERS_PER_PAGE
 
@@ -55,7 +58,7 @@ def create_app(test_config=None):
             return jsonify({
                 'success':True,
                 'created':user.format(),
-                'created':user_id
+                'created':user.id
             })
         except Exception as E:
             print(E)
