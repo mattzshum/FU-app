@@ -6,6 +6,8 @@ from api import create_app
 from models import setup_db, User, Location, Topic, Post, Comment
 from passwords import Passwords
 
+from flask_sqlalchemy import SQLAlchemy
+
 db_path = {
     'dialect':'postgresql',
     'username':'postgres',
@@ -24,7 +26,14 @@ class UserTestCase(unittest.TestCase):
         self.database_path = database_path
         setup_db(self.app, self.database_path)
 
-        self.new_user = {
+        #binds the app to current context
+        with self.app.app_context():
+            self.db = SQLAlchemy()
+            self.db.init_app(self.app)
+            #create all tables
+            self.db.create_all()
+
+        self.sample_user = {
             'f_name':'Matthew',
             'l_name':'Shum',
             'u_name':'shumbucket',
@@ -43,6 +52,59 @@ class UserTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['created'])
 
-    def test_404_requesting_beyond_valid_page(self):
-        res = self.client().get('/users')
-        #TODO:: Finish this test case
+    def test_get_user_ERROR(self):
+        res = self.client().get('/users/2')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 404)
+
+    
+    def test_insert_user(self):
+        res = self.client().post('/users',
+                                  data=json.dumps(self.sample_user),
+                                  content_type='application/json')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNotNone(data['new_user'])
+        self.assertIsNotNone(data['created'])
+    
+    def test_insert_user_ERROR(self):
+        res = self.client().post('/users',
+                                  data=json.dumps({}),
+                                  content_type='application/json')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+
+    def test_specific_user(self):
+        res = self.client().get('/users/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNotNone(data['users'])
+        self.assertEqual(data['success'], True)
+        self.assertIsNotNone(data['total_users'])
+
+    def test_specific_user_ERROR(self):
+        res = self.client().get('/users/501')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['error'], 404)
+
+    def test_delete_user(self):
+        res = self.client().delete('/users/1')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], 1)
+    
+    def test_delete_user_ERROR(self):
+        res = self.client().delete('/users')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+    
