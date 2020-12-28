@@ -38,6 +38,38 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app)
 
+    @app.route('/users', methods=['GET'])
+    def users():
+        try:
+            users = User.query.order_by(User.id).all()
+            if users is None:
+                print('Error no data returned')
+                abort(404)
+            return jsonify({
+                'succecss':True,
+                'users':[user.format() for user in users],
+                'total_users':len(users)
+            })
+        except Exception as E:
+            print(E)
+            abort(422)
+    
+    @app.route('/users/<int:user_id>', methods=['GET'])
+    def specific_user(user_id):
+        try:
+            user = User.query.filter(User.id == user_id).one_or_none()
+
+            if user is None:
+                print('One or None issue')
+                abort(404)
+            
+            return jsonify({
+                'success':True,
+                'user':user.format()
+            })
+        except Exception as E:
+            print(E)
+            abort(422)
 
     @app.route('/users', methods=['POST'])
     def create_user():
@@ -64,6 +96,25 @@ def create_app(test_config=None):
             print(E)
             abort(422)
     
+    @app.route('/users/<int:user_id>', methods=['DELETE'])
+    def delete_user(user_id):
+        try:
+            target_user = User.query.filter(User.id == user_id).one_or_none()
+
+            if target_user is None:
+                print('One or None issue')
+                abort(422)
+            
+            target_user.delete()
+
+            return jsonify({
+                'success':True,
+                'deleted':user_id
+            })
+        except Exception as E:
+            print(E)
+            abort(422)
+
     '''
     -----location()
 
@@ -83,7 +134,7 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'location':[locations.format() for Location in locations],
+                'locations':[locations.format() for Location in locations],
                 'total_location':len(location)
             })
         except Exception as E:
@@ -481,20 +532,59 @@ def create_app(test_config=None):
             abort(422)
             print(f'Error Code 422 {E}')
 
+
+    #NO CONTENT 204
+    @app.errorhandler(204)
+    def no_content(error):
+        return jsonify({
+            'success':True,
+            'error':204,
+            'message':'No Content. Request was completed successfully and there is no data to return in response.'
+        })
+
+    #NOT FOUND 404
     @app.errorhandler(404)
     def not_found(error):
       return jsonify({
         'success':False,
         'error':404,
-        'message':'Not Found'
+        'message':'Not Found. Resource referenced in the URL was not found.'
       }), 404
 
+    #UNPROCESSABLE 422
     @app.errorhandler(422)
     def unprocessable(error):
       return jsonify({
         'success':False,
         'error':422,
-        'message':'Not Processable'
+        'message':'Not Processable.'
       }), 422
-        
+
+    #FORBIDDEN 403
+    @app.errorhandler(403)
+    def forbidden(error):
+        return jsonify({
+            'success':False,
+            'error':403,
+            'message':'Forbidden. Authentication credentials sent with request are insufficient for the request.'
+        }), 403
+
+    #METHOD NOT ALLOWED 405
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({
+            'success':False,
+            'error':405,
+            'message':'Method Not Allowed. Method requested is not supported for the given resource.'
+        }), 405
+    
+    #INTERNAL SERVER ERROR 500
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return jsonify({
+            'success':False,
+            'error':500,
+            'message':'Internal Server Error. An unexpected error occured while processing the request.'
+        }), 500
+
     return app
