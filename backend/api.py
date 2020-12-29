@@ -534,13 +534,13 @@ def create_app(test_config=None):
 
 
     #NO CONTENT 204
-    @app.errorhandler(204)
-    def no_content(error):
-        return jsonify({
-            'success':True,
-            'error':204,
-            'message':'No Content. Request was completed successfully and there is no data to return in response.'
-        })
+    # @app.errorhandler(204)
+    # def no_content(error):
+    #     return jsonify({
+    #         'success':True,
+    #         'error':204,
+    #         'message':'No Content. Request was completed successfully and there is no data to return in response.'
+    #     })
 
     #NOT FOUND 404
     @app.errorhandler(404)
