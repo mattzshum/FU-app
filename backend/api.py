@@ -220,7 +220,7 @@ def create_app(test_config=None):
     none
 
     ---description
-    queries for all ltopics
+    queries for all topics
     '''
     @app.route('/topic',methods=['GET'])
     def topic():
