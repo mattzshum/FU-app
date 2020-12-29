@@ -63,8 +63,8 @@ class User(db.Model):
     l_name = Column(String(150), nullable=False)
     u_name = Column(String(150), nullable=False)
     phone = Column(String(15), nullable=False)
-    user_post = db.relationship('U_P',backref='Post',lazy=True)
-    user_comment = db.relationship('U_C',backref='Comment',lazy=True)
+    user_post = db.relationship('Post',backref='Post',lazy=True)
+    user_comment = db.relationship('Comment',backref='Comment',lazy=True)
 
 
     def __init__(self, f_name, l_name, u_name, phone):
@@ -169,7 +169,7 @@ class Post(db.Model):
     num_fu = Column(Integer, nullable=False)
     tag = Column(ARRAY(String))
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
-    comment_id = db.relationship('P_C',backref='Comment',lazy=True)
+    comments = db.relationship('Comment',backref='Comments',lazy=True)
 
     def __init__(self, title, body, num_fu, tag, user_id):
         self.title = title
