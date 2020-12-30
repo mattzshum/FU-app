@@ -227,9 +227,9 @@ class TopicTestCase(unittest.TestCase):
         res = self.client().get('/topic/501')
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['error'], 404)
+        self.assertEqual(data['error'], 422)
 
     def test_delete_topic(self):
         res = self.client().delete('/topic/1')

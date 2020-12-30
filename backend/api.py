@@ -46,7 +46,7 @@ def create_app(test_config=None):
                 print('Error no data returned')
                 abort(404)
             return jsonify({
-                'succecss':True,
+                'success':True,
                 'users':[user.format() for user in users],
                 'total_users':len(users)
             })
@@ -89,10 +89,11 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success':True,
-                'created':user.format(),
+                'user':user.format(),
                 'created':user.id
             })
         except Exception as E:
+            db.session.rollback()
             print(E)
             abort(422)
     
@@ -187,6 +188,7 @@ def create_app(test_config=None):
                 'created':location.format()
             })
         except Exception as E:
+            db.session.rollback()
             print(f'Error Code 422 {E}')
             abort(422)
 
@@ -203,7 +205,7 @@ def create_app(test_config=None):
     def delete_location(location_id):
         try:
             location = Location.query.filter(Location.id==location_id).one_or_none()
-            if location:
+            if location is None:
                 abort(404)
             return jsonify({
                 'success':True,
@@ -283,6 +285,7 @@ def create_app(test_config=None):
                 'created':topic.format()
             })
         except Exception as E:
+            db.session.rollback()
             print(f'Error Code 422 {E}')
             abort(422)
 
@@ -299,7 +302,7 @@ def create_app(test_config=None):
     def delete_topic(topic_id):
         try:
             topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
-            if topic:
+            if topic is None:
                 abort(404)
             return jsonify({
                 'success':True,
@@ -390,6 +393,7 @@ def create_app(test_config=None):
                 'created':post.format()
             })
         except Exception as E:
+            db.session.rollback()
             abort(422)
             print(f'Error Code 422 {E}')
 
@@ -501,6 +505,7 @@ def create_app(test_config=None):
                 'created':comment.format()
             })
         except Exception as E:
+            db.session.rollback()
             abort(422)
             print(f'Error Code 422 {E}')
         
@@ -554,11 +559,11 @@ def create_app(test_config=None):
     #UNPROCESSABLE 422
     @app.errorhandler(422)
     def unprocessable(error):
-      return jsonify({
-        'success':False,
-        'error':422,
-        'message':'Not Processable.'
-      }), 422
+        return jsonify({
+          'success':False,
+          'error':422,
+          'message':'Not Processable.'
+        }), 422
 
     #FORBIDDEN 403
     @app.errorhandler(403)
