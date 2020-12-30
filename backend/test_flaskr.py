@@ -137,6 +137,14 @@ class LocationTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertIsNotNone(data['created'])
+    
+    '''def test_insert_location_ERROR(self):
+        res = self.client().post('/location',
+                                   data=json.dumps({}),
+                                   content_type='application/json')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
 
     def test_get_location_ERROR(self):
         res = self.client().post('/location',
@@ -144,7 +152,7 @@ class LocationTestCase(unittest.TestCase):
                                   content_type='application/json')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 422)
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data['success'], False)'''
      
     def test_specific_location(self):
         res = self.client().get('/location/1')
@@ -170,9 +178,9 @@ class LocationTestCase(unittest.TestCase):
         self.assertEqual(data['deleted'], 1)
     
     def test_delete_location_ERROR(self):
-        res = self.client().delete('/location')
+        res = self.client().delete('/location/501')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
         
 class TopicTestCase(unittest.TestCase):
@@ -206,16 +214,24 @@ class TopicTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIsNotNone(data['created'])
 
+    '''def test_insert_topic_ERROR(self):
+        res = self.client().post('/topic',
+                                   data=json.dumps({}),
+                                   content_type='application/json')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+
     def test_get_topic_ERROR(self):
         res = self.client().post('/topic',
                                   data=json.dumps({}),
                                   content_type='application/json')
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(data['success'], False)
+        self.assertEqual(data['success'], False)'''
     
     def test_specific_topic(self):
-        res = self.client().get('/topic/1')
+        res = self.client().get('/topic/27')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -239,9 +255,9 @@ class TopicTestCase(unittest.TestCase):
         self.assertEqual(data['deleted'], 1)
     
     def test_delete_topic_ERROR(self):
-        res = self.client().delete('/topic')
+        res = self.client().delete('/topic/501')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
 
     class PostTestCase(unittest.TestCase):
