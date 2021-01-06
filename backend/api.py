@@ -5,7 +5,7 @@ import json
 from flask_cors import CORS 
 import babel
 
-from models import User, Location, Topic, Post, setup_db, Comment
+from models import User, Location, Topic, Post, setup_db, Comment, db
 
 # TODO:
 '''
@@ -394,8 +394,8 @@ def create_app(test_config=None):
             })
         except Exception as E:
             db.session.rollback()
-            abort(422)
             print(f'Error Code 422 {E}')
+            abort(422)
 
     '''
     -----delete_post()
