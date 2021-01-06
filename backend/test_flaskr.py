@@ -214,7 +214,7 @@ class TopicTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIsNotNone(data['created'])
 
-    '''def test_insert_topic_ERROR(self):
+    def test_insert_topic_ERROR(self):
         res = self.client().post('/topic',
                                    data=json.dumps({}),
                                    content_type='application/json')
@@ -222,16 +222,15 @@ class TopicTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
 
-    def test_get_topic_ERROR(self):
-        res = self.client().post('/topic',
-                                  data=json.dumps({}),
-                                  content_type='application/json')
+    def test_get_topic(self):
+        res = self.client().get('/topic')
         data = json.loads(res.data)
-        self.assertEqual(res.status_code, 400)
-        self.assertEqual(data['success'], False)'''
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertIsNotNone(data['current_topic'])
     
     def test_specific_topic(self):
-        res = self.client().get('/topic/27')
+        res = self.client().get('/topic/1')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
