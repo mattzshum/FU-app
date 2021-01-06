@@ -92,6 +92,7 @@ class User(db.Model):
             'u_name':self.u_name,
             'phone':self.phone
         }
+        
 
 class Location(db.Model):
     __tablename__='Location'

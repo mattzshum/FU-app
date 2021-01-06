@@ -129,7 +129,7 @@ def create_app(test_config=None):
     def location():
         try:
             locations = Location.query.order_by(Location.id).all()
-            if locations == None:
+            if locations is None:
                 print('Dont work')
                 abort(404)
             
@@ -204,7 +204,7 @@ def create_app(test_config=None):
     @app.route('/location/<int:location_id>', methods=['DELETE'])
     def delete_location(location_id):
         try:
-            location = Location.query.filter(Location.id==location_id).one_or_none()
+            location = Location.query.filter(Location.id == location_id).one_or_none()
             if location is None:
                 abort(404)
             return jsonify({
@@ -228,7 +228,7 @@ def create_app(test_config=None):
     def topic():
         try:
             topics = Topic.query.order_by(Topic.id).all()
-            if topic == None:
+            if topic is None:
                 print('dont work')
                 abort(404)
             return jsonify({
