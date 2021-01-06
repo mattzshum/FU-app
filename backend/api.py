@@ -251,17 +251,17 @@ def create_app(test_config=None):
     @app.route('/topic/int:<topic_id>', methods=['GET'])
     def specific_topic(topic_id):
         try:
-            s_topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
-            if s_topic == None:
-                print('Not there')
+            s_topic = Topic.query.filter(Topic.id == topic_id).one_or_none()
+            if s_topic is None:
                 abort(404)
+                print('Not there')
             return jsonify({
                 'success':True,
                 's_topic':s_topic.format()
             })
         except Exception as E:
-            print(f'Error Code 422 {E}')
             abort(422)
+            print(f'Error Code 422 {E}')
 
     '''
     -----create_topic(void)
