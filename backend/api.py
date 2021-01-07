@@ -5,7 +5,7 @@ import json
 from flask_cors import CORS 
 import babel
 
-from models import User, Location, Topic, Post, setup_db, Comment
+from models import User, Location, Topic, Post, setup_db, Comment, db
 
 # TODO:
 '''
@@ -38,6 +38,38 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app)
 
+    @app.route('/users', methods=['GET'])
+    def users():
+        try:
+            users = User.query.order_by(User.id).all()
+            if users is None:
+                print('Error no data returned')
+                abort(404)
+            return jsonify({
+                'success':True,
+                'users':[user.format() for user in users],
+                'total_users':len(users)
+            })
+        except Exception as E:
+            print(E)
+            abort(422)
+    
+    @app.route('/users/<int:user_id>', methods=['GET'])
+    def specific_user(user_id):
+        try:
+            user = User.query.filter(User.id == user_id).one_or_none()
+
+            if user is None:
+                print('One or None issue')
+                abort(404)
+            
+            return jsonify({
+                'success':True,
+                'user':user.format()
+            })
+        except Exception as E:
+            print(E)
+            abort(422)
 
     @app.route('/users', methods=['POST'])
     def create_user():
@@ -57,13 +89,33 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success':True,
-                'created':user.format(),
+                'user':user.format(),
                 'created':user.id
+            })
+        except Exception as E:
+            db.session.rollback()
+            print(E)
+            abort(422)
+    
+    @app.route('/users/<int:user_id>', methods=['DELETE'])
+    def delete_user(user_id):
+        try:
+            target_user = User.query.filter(User.id == user_id).one_or_none()
+
+            if target_user is None:
+                print('One or None issue')
+                abort(422)
+            
+            target_user.delete()
+
+            return jsonify({
+                'success':True,
+                'deleted':user_id
             })
         except Exception as E:
             print(E)
             abort(422)
-    
+
     '''
     -----location()
 
@@ -77,13 +129,13 @@ def create_app(test_config=None):
     def location():
         try:
             locations = Location.query.order_by(Location.id).all()
-            if locations == None:
+            if locations is None:
                 print('Dont work')
                 abort(404)
             
             return jsonify({
                 'success':True,
-                'location':[locations.format() for Location in locations],
+                'locations':[locations.format() for Location in locations],
                 'total_location':len(location)
             })
         except Exception as E:
@@ -136,6 +188,7 @@ def create_app(test_config=None):
                 'created':location.format()
             })
         except Exception as E:
+            db.session.rollback()
             print(f'Error Code 422 {E}')
             abort(422)
 
@@ -151,8 +204,8 @@ def create_app(test_config=None):
     @app.route('/location/<int:location_id>', methods=['DELETE'])
     def delete_location(location_id):
         try:
-            location = Location.query.filter(Location.id==location_id).one_or_none()
-            if location:
+            location = Location.query.filter(Location.id == location_id).one_or_none()
+            if location is None:
                 abort(404)
             return jsonify({
                 'success':True,
@@ -169,13 +222,13 @@ def create_app(test_config=None):
     none
 
     ---description
-    queries for all ltopics
+    queries for all topics
     '''
     @app.route('/topic',methods=['GET'])
     def topic():
         try:
             topics = Topic.query.order_by(Topic.id).all()
-            if topic == None:
+            if topic is None:
                 print('dont work')
                 abort(404)
             return jsonify({
@@ -198,17 +251,17 @@ def create_app(test_config=None):
     @app.route('/topic/int:<topic_id>', methods=['GET'])
     def specific_topic(topic_id):
         try:
-            s_topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
-            if s_topic == None:
-                print('Not there')
+            s_topic = Topic.query.filter(Topic.id == topic_id).one_or_none()
+            if s_topic is None:
                 abort(404)
+                print('Not there')
             return jsonify({
                 'success':True,
                 's_topic':s_topic.format()
             })
         except Exception as E:
-            print(f'Error Code 422 {E}')
             abort(422)
+            print(f'Error Code 422 {E}')
 
     '''
     -----create_topic(void)
@@ -232,6 +285,7 @@ def create_app(test_config=None):
                 'created':topic.format()
             })
         except Exception as E:
+            db.session.rollback()
             print(f'Error Code 422 {E}')
             abort(422)
 
@@ -248,7 +302,7 @@ def create_app(test_config=None):
     def delete_topic(topic_id):
         try:
             topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
-            if topic:
+            if topic is None:
                 abort(404)
             return jsonify({
                 'success':True,
@@ -339,8 +393,9 @@ def create_app(test_config=None):
                 'created':post.format()
             })
         except Exception as E:
-            abort(422)
+            db.session.rollback()
             print(f'Error Code 422 {E}')
+            abort(422)
 
     '''
     -----delete_post()
@@ -450,6 +505,7 @@ def create_app(test_config=None):
                 'created':comment.format()
             })
         except Exception as E:
+            db.session.rollback()
             abort(422)
             print(f'Error Code 422 {E}')
         
@@ -481,20 +537,59 @@ def create_app(test_config=None):
             abort(422)
             print(f'Error Code 422 {E}')
 
+
+    #NO CONTENT 204
+    # @app.errorhandler(204)
+    # def no_content(error):
+    #     return jsonify({
+    #         'success':True,
+    #         'error':204,
+    #         'message':'No Content. Request was completed successfully and there is no data to return in response.'
+    #     })
+
+    #NOT FOUND 404
     @app.errorhandler(404)
     def not_found(error):
       return jsonify({
         'success':False,
         'error':404,
-        'message':'Not Found'
+        'message':'Not Found. Resource referenced in the URL was not found.'
       }), 404
 
+    #UNPROCESSABLE 422
     @app.errorhandler(422)
     def unprocessable(error):
-      return jsonify({
-        'success':False,
-        'error':422,
-        'message':'Not Processable'
-      }), 422
-        
+        return jsonify({
+          'success':False,
+          'error':422,
+          'message':'Not Processable.'
+        }), 422
+
+    #FORBIDDEN 403
+    @app.errorhandler(403)
+    def forbidden(error):
+        return jsonify({
+            'success':False,
+            'error':403,
+            'message':'Forbidden. Authentication credentials sent with request are insufficient for the request.'
+        }), 403
+
+    #METHOD NOT ALLOWED 405
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({
+            'success':False,
+            'error':405,
+            'message':'Method Not Allowed. Method requested is not supported for the given resource.'
+        }), 405
+    
+    #INTERNAL SERVER ERROR 500
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return jsonify({
+            'success':False,
+            'error':500,
+            'message':'Internal Server Error. An unexpected error occured while processing the request.'
+        }), 500
+
     return app

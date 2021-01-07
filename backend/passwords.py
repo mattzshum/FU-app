@@ -1,2 +1,2 @@
 class Passwords:
-    password=''
+    password='1657'
