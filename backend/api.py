@@ -125,7 +125,7 @@ def create_app(test_config=None):
     ---description
     queueries for all locations
     '''
-    @app.route('/location', methods=['GET'])
+    @app.route('/locations', methods=['GET'])
     def location():
         try:
             locations = Location.query.order_by(Location.id).all()
@@ -135,8 +135,8 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'locations':[locations.format() for Location in locations],
-                'total_location':len(location)
+                'locations':[location.format() for location in locations],
+                'total_location':len(locations)
             })
         except Exception as E:
             print(f'Error Code 422 {E}')
@@ -151,7 +151,7 @@ def create_app(test_config=None):
     ---description
     queueries looking for a specific location
     '''
-    @app.route('/location/<int:location_id>', methods=['GET'])
+    @app.route('/locations/<int:location_id>', methods=['GET'])
     def specific_location(location_id):
         try:
             s_location = Location.query.filter(Location.id == location_id).one_or_none()
@@ -176,7 +176,7 @@ def create_app(test_config=None):
     ---description
     creates a new specific location
     '''
-    @app.route('/location', methods=['POST'])
+    @app.route('/locations', methods=['POST'])
     def create_location():
         body = request.get_json()
         name = body.get('name', None)
@@ -201,7 +201,7 @@ def create_app(test_config=None):
     ---description
     deletes a specific location
     '''
-    @app.route('/location/<int:location_id>', methods=['DELETE'])
+    @app.route('/locations/<int:location_id>', methods=['DELETE'])
     def delete_location(location_id):
         try:
             location = Location.query.filter(Location.id == location_id).one_or_none()
@@ -248,7 +248,7 @@ def create_app(test_config=None):
     ---description
     searches for specific topic_id
     '''
-    @app.route('/topic/int:<topic_id>', methods=['GET'])
+    @app.route('/topic/<int:topic_id>', methods=['GET'])
     def specific_topic(topic_id):
         try:
             s_topic = Topic.query.filter(Topic.id == topic_id).one_or_none()
@@ -332,7 +332,7 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'data':[post.format() for post in posts],
+                'posts':[post.format() for post in posts],
                 'total_posts':len(posts)
             })
         except Exception as E:
