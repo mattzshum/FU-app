@@ -184,81 +184,81 @@ class UserTestCase(unittest.TestCase):
 #         self.assertEqual(res.status_code, 422)
 #         self.assertEqual(data['success'], False)
         
-# class TopicTestCase(unittest.TestCase):
-#     '''Topic test case'''
-#     def setUp(self):
-#         self.app = create_app()
-#         self.client = self.app.test_client
-#         self.database_path = database_path
-#         setup_db(self.app, self.database_path)
+class CommentTestCase(unittest.TestCase):
+     '''Topic test case'''
+     def setUp(self):
+         self.app = create_app()
+         self.client = self.app.test_client
+         self.database_path = database_path
+         setup_db(self.app, self.database_path)
 
-#         with self.app.app_context():
-#             self.db = SQLAlchemy()
-#             self.db.init_app(self.app)
-#             #create all tables
-#             self.db.create_all()
+         with self.app.app_context():
+             self.db = SQLAlchemy()
+             self.db.init_app(self.app)
+             #create all tables
+             self.db.create_all()
 
-#         self.sample_topic = {
-#             'name':'Ur Moms House',
-#             'description':'banged'
-#         }
+         self.sample_comment = {
+             'self.':'Ur Moms House',
+             'description':'banged'
+         }
 
-#     def tearDown(self):
-#         '''executed after each test'''
-#         pass
+     def tearDown(self):
+         '''executed after each test'''
+         pass
 
-#     def test_insert_topic(self):
-#         res = self.client().post('/topic',
-#                                   data=json.dumps(self.sample_topic),
-#                                   content_type='application/json')
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertIsNotNone(data['created'])
-#         self.assertEqual(data['success'], True)
+     def test_insert_topic(self):
+         res = self.client().post('/topic',
+                                   data=json.dumps(self.sample_topic),
+                                   content_type='application/json')
+         data = json.loads(res.data)
+         self.assertEqual(res.status_code, 200)
+         self.assertIsNotNone(data['created'])
+         self.assertEqual(data['success'], True)
 
-#     def test_insert_topic_ERROR(self):
-#         res = self.client().post('/topic',
-#                                    data=json.dumps({}),
-#                                    content_type='application/json')
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 422)
-#         self.assertEqual(data['success'], False)
+     def test_insert_topic_ERROR(self):
+         res = self.client().post('/topic',
+                                    data=json.dumps({}),
+                                    content_type='application/json')
+         data = json.loads(res.data)
+         self.assertEqual(res.status_code, 422)
+         self.assertEqual(data['success'], False)
 
-#     def test_get_topic(self):
-#         res = self.client().get('/topic')
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertIsNotNone(data['current_topic'])
+     def test_get_topic(self):
+         res = self.client().get('/topic')
+         data = json.loads(res.data)
+         self.assertEqual(res.status_code, 200)
+         self.assertEqual(data['success'], True)
+         self.assertIsNotNone(data['current_topic'])
     
-#     def test_specific_topic(self):
-#         res = self.client().get('/topic/3')
-#         data = json.loads(res.data)
+     def test_specific_topic(self):
+         res = self.client().get('/topic/1')
+         data = json.loads(res.data)
 
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertIsNotNone(data['s_topic'])
+         self.assertEqual(res.status_code, 200)
+         self.assertEqual(data['success'], True)
+         self.assertIsNotNone(data['s_topic'])
 
-#     def test_specific_topic_ERROR(self):
-#         res = self.client().get('/topic/99')
-#         data = json.loads(res.data)
+     def test_specific_topic_ERROR(self):
+         res = self.client().get('/topic/99')
+         data = json.loads(res.data)
 
-#         self.assertEqual(res.status_code, 422)
-#         self.assertEqual(data['success'], False)
-#         self.assertEqual(data['error'], 422)
+         self.assertEqual(res.status_code, 422)
+         self.assertEqual(data['success'], False)
+         self.assertEqual(data['error'], 422)
 
-#     def test_delete_topic(self):
-#         res = self.client().delete('/topic/1')
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 200)
-#         self.assertEqual(data['success'], True)
-#         self.assertEqual(data['deleted'], 1)
+     def test_delete_topic(self):
+         res = self.client().delete('/topic/1')
+         data = json.loads(res.data)
+         self.assertEqual(res.status_code, 200)
+         self.assertEqual(data['success'], True)
+         self.assertEqual(data['deleted'], 1)
     
-#     def test_delete_topic_ERROR(self):
-#         res = self.client().delete('/topic/501')
-#         data = json.loads(res.data)
-#         self.assertEqual(res.status_code, 422)
-#         self.assertEqual(data['success'], False)
+     def test_delete_topic_ERROR(self):
+         res = self.client().delete('/topic/501')
+         data = json.loads(res.data)
+         self.assertEqual(res.status_code, 422)
+         self.assertEqual(data['success'], False)
 
 #     class PostTestCase(unittest.TestCase):
 #         def setup(self):
@@ -333,6 +333,78 @@ class UserTestCase(unittest.TestCase):
 #             self.assertEqual(res.status_code, 200)
 #             self.assertEqual(data['deleted'], 1)
 
-    
+class CommentTestCase(unittest.TestCase):
+    '''Comment test case'''
+    def setUp(self):
+        self.app = create_app()
+        self.client = self.app.test_client
+        self.database_path = database_path
+        setup_db(self.app, self.database_path)
+
+        with self.app.app_context():
+            self.db = SQLAlchemy()
+            self.db.init_app(self.app)
+            #create all tables
+            self.db.create_all()
+
+        self.sample_comment = {
+                 'title':'GTFO R4A3',
+                 'body':'yeet',
+                 'prev': 1,
+                 'post_id':1,
+                 'user_id':1
+             }
+    def tearDown(self):
+        '''executed after each test'''
+        pass
+
+    def test_insert_comment(self):
+        res = self.client().post('/comment',
+                                   data=json.dumps(self.sample_comment),
+                                   content_type='application/json')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertIsNotNone(data['created'])
+        self.assertEqual(data['success'], True)
+
+    def test_insert_comment_ERROR(self):
+        res = self.client().post('/comment',
+                                    data=json.dumps({}),
+                                    content_type='application/json')
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+
+    def test_get_comment(self):
+        res = self.client().get('/comment')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertIsNotNone(data['data'])
+        self.assertIsNotNone(data['total_posts'])
+
+    def test_specific_comment(self):
+        res = self.client().get('/comment/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertIsNotNone(data['data'])
+        
+    def test_specific_comment_ERROR(self):
+        res = self.client().get('/comment/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+
+    def test_delete_comment(self):
+        res = self.client().delete('/comment/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['deleted'], 1)
+
 if __name__ == '__main__':
     unittest.main()

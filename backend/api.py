@@ -285,7 +285,8 @@ def create_app(test_config=None):
                 'created':topic.format()
             })
         except Exception as E:
-            db.session.rollback()
+            #db.session.rollback()
+            
             print(f'Error Code 422 {E}')
             abort(422)
 

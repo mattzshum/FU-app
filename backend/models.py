@@ -226,6 +226,7 @@ class Comment(db.Model):
     
     def format(self):
         return {
+            'id':self.id
             'body':self.body,
             'prev':self.prev,
             'post_id':self.post_id,
