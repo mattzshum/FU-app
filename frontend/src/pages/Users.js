@@ -5,6 +5,7 @@ const Users = () => {
     return(
         <div>
             <h1>USERS</h1>
+            <button>CREATE USER</button>
             <div><UserList /></div>
         </div>
     )

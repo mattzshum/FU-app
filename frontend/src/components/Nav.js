@@ -10,6 +10,7 @@ const Nav = () => {
                 <li><Link id='Users' to='/users'>Users</Link></li>
                 <li><Link id='Posts' to='/posts'>Posts</Link></li>
                 <li><Link id='Locations' to='/locations'>Locations</Link></li>
+                <li><Link id='Comments' to='/comments'>Comments</Link></li>
             </ul>
         </StyledNav>
     );

@@ -17,8 +17,7 @@ const LocationList = () => {
         <div>
             <h1>LOCATION LIST</h1>
             {locationList && locationList.map(location => (
-                // <div key={location.id}>{location.id}</div>
-                <div><LocationTile  id={location.id} name={location.name}/></div>
+                <div key={location.id}><LocationTile  id={location.id} name={location.name}/></div>
             ))}
         </div>
     )
