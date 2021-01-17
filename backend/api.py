@@ -161,7 +161,7 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                's_location':s_location.format()
+                'location':s_location.format()
             })
         except Exception as E:
             print(f'Error Code 422 {E}')
@@ -360,7 +360,7 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'data':post.format()
+                'post':post.format()
             })
         except Exception as E:
             abort(422)
@@ -446,7 +446,7 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'data':[comment.format() for comment in comments],
+                'comments':[comment.format() for comment in comments],
                 'total_comments':len(comments)
             })
         except Exception as E:
@@ -473,7 +473,7 @@ def create_app(test_config=None):
             
             return jsonify({
                 'success':True,
-                'data':comment.format()
+                'comment':comment.format()
             })
         except Exception as E:
             abort(422)
