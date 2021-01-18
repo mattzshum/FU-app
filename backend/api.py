@@ -73,14 +73,14 @@ def create_app(test_config=None):
 
     @app.route('/users', methods=['POST'])
     def create_user():
-        body = request.get_json()
-
-        new_f_name = body.get('f_name', None)
-        new_l_name = body.get('l_name', None)
-        new_u_name = body.get('u_name', None)
-        new_phone = body.get('phone', None)
-
         try:
+            body = request.get_json()
+
+            new_f_name = body.get('f_name', None)
+            new_l_name = body.get('l_name', None)
+            new_u_name = body.get('u_name', None)
+            new_phone = body.get('phone', None)
+
             user = User(f_name = new_f_name,
                         l_name = new_l_name,
                         u_name = new_u_name,
@@ -207,6 +207,7 @@ def create_app(test_config=None):
             location = Location.query.filter(Location.id == location_id).one_or_none()
             if location is None:
                 abort(404)
+            location.delete()
             return jsonify({
                 'success':True,
                 'deleted':location_id
@@ -507,8 +508,9 @@ def create_app(test_config=None):
             })
         except Exception as E:
             db.session.rollback()
-            abort(422)
             print(f'Error Code 422 {E}')
+            abort(422)
+            
         
     '''
     -----delete_comment(comment_id)

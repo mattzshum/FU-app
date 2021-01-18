@@ -74,15 +74,27 @@ class User(db.Model):
         self.phone = phone
     
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def update(self):
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def format(self):
         return{
@@ -222,7 +234,11 @@ class Comment(db.Model):
         db.session.commit()
         
     def delete(self):
-        db.session.delete(self)
+        try:
+            db.session.delete(self)
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def format(self):
         return {
