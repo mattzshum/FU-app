@@ -1,12 +1,13 @@
 import React from 'react';
 import CommentList from '../components/CommentList';
 import styled from 'styled-components';
+import CreateComment from '../components/createComment'
 
 const Comments = () => {
 
     return(
         <styledComment>
-            <button>Create</button>
+            <CreateComment></CreateComment>
             <h1>COMMENTS</h1>
             <div><CommentList/></div>
         </styledComment>
