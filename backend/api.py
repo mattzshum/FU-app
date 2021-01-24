@@ -306,6 +306,7 @@ def create_app(test_config=None):
             topic = Topic.query.filter(Topic.id==topic_id).one_or_none()
             if topic is None:
                 abort(404)
+            topic.delete()
             return jsonify({
                 'success':True,
                 'deleted':topic_id

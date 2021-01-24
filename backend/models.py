@@ -80,13 +80,9 @@ class User(db.Model):
         except Exception as E:
             print(E)
             db.session.rollback()
-    
+
     def update(self):
-        try:
-            db.session.commit()
-        except Exception as E:
-            print(E)
-            db.session.rollback()
+        db.session.commit()
     
     def delete(self):
         try:
@@ -120,15 +116,25 @@ class Location(db.Model):
         self.name = name
     
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
+            db.session.remove()
+            db.session.commit()
     
     def update(self):
         db.session.commit()
     
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def format(self):
         return{
@@ -152,15 +158,23 @@ class Topic(db.Model):
         self.description = description
 
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
-    
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
+
     def update(self):
         db.session.commit()
     
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def format(self):
         return{
@@ -192,14 +206,23 @@ class Post(db.Model):
         self.user_id = user_id
     
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def update(self):
         db.session.commit()
         
     def delete(self):
-        db.session.delete(self)
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def format(self):
         return{
@@ -227,8 +250,12 @@ class Comment(db.Model):
         self.user_id = user_id
 
     def insert(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as E:
+            print(E)
+            db.session.rollback()
     
     def update(self):
         db.session.commit()
@@ -236,6 +263,7 @@ class Comment(db.Model):
     def delete(self):
         try:
             db.session.delete(self)
+            db.session.commit()
         except Exception as E:
             print(E)
             db.session.rollback()
