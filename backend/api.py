@@ -355,14 +355,18 @@ def create_app(test_config=None):
     def specific_post(post_id):
         try:
             post = Post.query.filter(Post.id == post_id).one_or_none()
+            comments = Comment.query.filter(post.id == Comment.post_id).all()
+            user = User.query.filter(post.user_id == User.id).one_or_none()
 
-            if post is None:
+            if post is None or user is None:
                 abort(404)
-                print('Error Fetching Specific Post')
+                print('Error Fetching Specific Post or User affiliated')
             
             return jsonify({
                 'success':True,
-                'post':post.format()
+                'post':post.format(),
+                'comments':[comment.format() for comment in comments],
+                'user':user.format()
             })
         except Exception as E:
             abort(422)
@@ -481,26 +485,26 @@ def create_app(test_config=None):
             abort(422)
             print(f'Error Code 422 {E}')
     
-    @app.route('/comments/user-comments/<int:user_id>', methods=['GET'])
-    def user_comments(user_id):
-        try:
-            comments = Comment.query.filter(Comment.user_id == user_id).all()
+    # @app.route('/comments/user-comments/<int:user_id>', methods=['GET'])
+    # def user_comments(user_id):
+    #     try:
+    #         comments = Comment.query.filter(Comment.user_id == user_id).all()
 
-            if comments is None:
-                return jsonify({
-                    'success':True,
-                    'comments':[],
-                    'num_comments':0
-                })
+    #         if comments is None:
+    #             return jsonify({
+    #                 'success':True,
+    #                 'comments':[],
+    #                 'num_comments':0
+    #             })
             
-            return jsonify({
-                'success':True,
-                'comments':[comment.format() for comment in comments],
-                'num_comments':len(comments)
-            })
-        except Exception as E:
-            print(f'Error Codd 422 {E}')
-            abort(422)
+    #         return jsonify({
+    #             'success':True,
+    #             'comments':[comment.format() for comment in comments],
+    #             'num_comments':len(comments)
+    #         })
+    #     except Exception as E:
+    #         print(f'Error Codd 422 {E}')
+    #         abort(422)
     
     '''
     -----create_comment()

@@ -1,6 +1,7 @@
 import React, {Component, useEffect, useState} from "react";
 import {withRouter, Link} from 'react-router-dom';
 import axios from 'axios';
+import styled from 'styled-components';
 
 const User = ({match}) => {
     const [user, setUser] = useState({});
@@ -14,13 +15,23 @@ const User = ({match}) => {
     }, []);
 
     return(
-        <div>
-            <p>{user.id}</p>
+        <StyledUserPage>
+            {/* <p>{user.id}</p> */}
             <h1>{user.f_name} {user.l_name}</h1>
             <h3>{user.u_name}</h3>
             <p>phone: {user.phone}</p>
-        </div>
+        </StyledUserPage>
     )
-}
+};
+
+const StyledUserPage = styled.a`
+    /* display: ; */
+    text-align: left;
+    margin:auto;
+    justify-content: space-between;
+    align-items:center;
+    /* background-color:; */
+
+`;
 
 export default User;

@@ -2,33 +2,32 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-class CreateComment extends Component{
-    state = {
+class CreatePost extends Component{
+    state={
+        title:null,
         body:null,
-        post_id:this.props.post_id,
-        prev:null,
-        user_id:null,
+        num_fu:0, //integer remember
+        tag:[], //array implement later later
+        user_id:null, //integer remember
     }
 
     handleChange = (event) => {
         this.setState({[event.target.name]: event.target.value})
-        // console.log({[event.target.name]: event.target.value})
     }
 
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
-        console.log(this.props.post_id);
-        console.log(this.state.post_id);
 
         const data = {
+            title:this.state.title,
             body:this.state.body,
-            post_id:this.props.post_id,
-            prev:this.state.prev,
-            user_id:parseInt(this.state.user_id, 10),
+            num_fu:this.state.num_fu,
+            tag:this.state.tag,
+            user_id:this.state.user_id,
         }
-        console.log(data);
+        console.log(data)
 
-        axios.post(`http://127.0.0.1:5000/comments`, data)
+        axios.post(`http://127.0.0.1:5000/posts`, data)
              .then(res => {
                  console.log(data);
                  console.log(res);
@@ -38,22 +37,22 @@ class CreateComment extends Component{
     }
 
     render() {
-        return(
-            <StyledCreateComment>
-                <p>Comment</p>
-                <form onSubmit={this.handleSubmit}>
-                    <label>
-                        <input type='text' name='body' placeholder='comment..' onChange={this.handleChange} />
-                        <input type='number' name='user_id' placeholder='user id..' onChange={this.handleChange} />
-                    </label>
-                    <button className='arrow' type='submit'>post</button>
-                </form>
-            </StyledCreateComment>
+        return (
+            <StyledCreatePost>
+                 <form onSubmit={this.handleSubmit}>
+                     <label>
+                         <input type='text' placeholder='title..' name='title' onChange={this.handleChange} />
+                         <input type='text' placeholder='contents..' name='body' onChange={this.handleChange} />
+                         <input type='number' placeholder='user id..' name='user_id' onChange={this.handleChange} />
+                     </label>
+                     <button className='arrow' type='submit'>SUBMIT</button>
+                 </form>
+            </StyledCreatePost>
         )
     };
 };
 
-const StyledCreateComment = styled.a`
+const StyledCreatePost = styled.a`
     background-color: #f2f2f2;
     display: block;
     form{
@@ -64,11 +63,12 @@ const StyledCreateComment = styled.a`
         padding: 12px 20px;
         margin: 8px 0;
         border: 1px solid #ccc;
+        height:10px;
     }
     button {
         position: relative;
         //display:block;
-        height: 40px;
+        height: 37px;
         width: 100px;
         margin: 10px 7px;
         padding: 5px 5px;
@@ -107,4 +107,4 @@ const StyledCreateComment = styled.a`
     }
 `
 
-export default CreateComment;
+export default CreatePost;
