@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, {Component, useEffect, useState} from "react";
 import {Link} from 'react-router-dom';
+import styled from 'styled-components';
 
 class UserTile extends Component {
 
@@ -18,17 +19,25 @@ class UserTile extends Component {
 
     render() {
         return(
-            <div>
-                <h3>gen info</h3>
-                <p><Link id='specific_user' to={`/users/${this.props.id}`}>{this.props.id} : {this.props.f_name} {this.props.l_name}</Link></p>
-                <h4>contact info</h4>
-                <p><i>user_name: {this.props.u_name} phone: {this.props.phone}</i></p>
+            <StyledUser>
+                <h3><Link id='specific_user' to={`/users/${this.props.id}`}>{this.props.u_name}</Link></h3>
+                <p><i>{this.props.f_name} {this.props.l_name}</i></p>
+                <p>member since: {this.props.date_created}</p>
                 <form onSubmit={this.handleSubmit}>
                     <button type='submit'>DELETE</button>
                 </form>
-            </div>
+            </StyledUser>
         )
     }
-}
+};
+
+const StyledUser = styled.a`
+    display:block-size;
+    a{
+        color:black;
+        text-decoration:none;
+    }
+`
+
 
 export default UserTile;

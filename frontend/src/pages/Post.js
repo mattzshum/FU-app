@@ -22,10 +22,8 @@ const Post = ({ match }) => {
     return (
         <div>
             <StyledPost>
-                {/* <p>{post.id}</p> */}
                 <h1>{post.title}</h1>
                 <p className='user'>{user.f_name} {user.l_name}</p>
-                {/* <h3>{post.user_id}</h3> */}
                 <p className='body'>{post.body}</p>
                 <p>{post.num_fu}</p>
             </StyledPost>

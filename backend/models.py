@@ -1,9 +1,11 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine, ForeignKey, Float, ARRAY, TIMESTAMP, Table, MetaData
+from sqlalchemy import Column, String, Integer, create_engine, ForeignKey, Float, ARRAY, TIMESTAMP, Table, MetaData, DateTime
 import json
 from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
+from datetime import datetime
+from pytz import timezone
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -24,6 +26,7 @@ from passwords import Passwords
 
 metadata = MetaData()
 Base = declarative_base(metadata=metadata)
+fmt = "%Y-%m-%d %H:%M:%S %Z%z"
 
 db_path = {
     'dialect':'postgresql',
@@ -63,6 +66,7 @@ class User(db.Model):
     l_name = Column(String(150), nullable=False)
     u_name = Column(String(150), nullable=False)
     phone = Column(String(15), nullable=False)
+    date_created = Column(DateTime(), nullable=False)
     user_post = db.relationship('Post',backref='Post',lazy=True)
     user_comment = db.relationship('Comment',backref='Comment',lazy=True)
 
@@ -72,6 +76,7 @@ class User(db.Model):
         self.l_name = l_name
         self.u_name = u_name
         self.phone = phone
+        self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
     
     def insert(self):
         try:
@@ -98,7 +103,8 @@ class User(db.Model):
             'f_name':self.f_name,
             'l_name':self.l_name,
             'u_name':self.u_name,
-            'phone':self.phone
+            'phone':self.phone,
+            'date_created':self.date_created,
         }
         
 
@@ -111,9 +117,11 @@ class Location(db.Model):
     '''
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    date_created = Column(DateTime(), nullable=False)
 
     def __init__(self, name):
         self.name = name
+        self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
     
     def insert(self):
         try:
@@ -139,7 +147,8 @@ class Location(db.Model):
     def format(self):
         return{
             'id':self.id,
-            'name':self.name
+            'name':self.name,
+            'date_created':self.date_created,
         }
 
 class Topic(db.Model):
@@ -152,10 +161,12 @@ class Topic(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    date_created = Column(DateTime(), nullable=False)
 
     def __init__(self, name, description):
         self.name = name
         self.description = description
+        self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
 
     def insert(self):
         try:
@@ -180,7 +191,8 @@ class Topic(db.Model):
         return{
             'id':self.id,
             'name':self.name,
-            'description':self.description
+            'description':self.description,
+            'date_created':self.date_created,
         }
 
 class Post(db.Model):
@@ -195,6 +207,7 @@ class Post(db.Model):
     body = Column(String, nullable=False)
     num_fu = Column(Integer, nullable=False)
     tag = Column(ARRAY(String))
+    date_created = Column(DateTime(), nullable=False)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     comments = db.relationship('Comment',backref='Comments',lazy=True)
 
@@ -204,6 +217,7 @@ class Post(db.Model):
         self.num_fu = num_fu
         self.tag = tag
         self.user_id = user_id
+        self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
     
     def insert(self):
         try:
@@ -231,7 +245,8 @@ class Post(db.Model):
             'body':self.body,
             'num_fu':self.num_fu,
             'tag':self.tag,
-            'user_id':self.user_id
+            'user_id':self.user_id,
+            'date_created':self.date_created,
         }
 
 class Comment(db.Model):
@@ -240,6 +255,7 @@ class Comment(db.Model):
     id = Column(Integer, primary_key=True)
     body = Column(String, nullable=False)
     prev = Column(Integer)
+    date_created = Column(DateTime(), nullable=False)
     post_id = Column(Integer, ForeignKey('Post.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     
@@ -248,6 +264,7 @@ class Comment(db.Model):
         self.prev = prev
         self.post_id = post_id
         self.user_id = user_id
+        self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
 
     def insert(self):
         try:
@@ -274,5 +291,6 @@ class Comment(db.Model):
             'body':self.body,
             'prev':self.prev,
             'post_id':self.post_id,
-            'user_id':self.user_id
+            'user_id':self.user_id,
+            'date_created':self.date_created,
         }
