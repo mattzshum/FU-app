@@ -21,6 +21,7 @@ class PostTile extends Component{
                 <h2><Link id='specific_post' to={`/posts/${this.props.id}`}>{this.props.title}</Link></h2>
                 <p>{this.props.body}</p>
                 <p>{this.props.num_fu}</p>
+                <p>posted on: {this.props.date_created}</p>
                 <p>{this.props.tag}</p>
                 <form onSubmit={this.handleSubmit}>
                     <button className='arrow' type='submit'>DELETE</button>

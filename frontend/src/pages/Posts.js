@@ -9,7 +9,6 @@ class Posts extends Component{
     state={
         title:null,
         body:null,
-        num_fu:0, //integer remember
         tag:[], //array implement later later
         user_id:null, //integer remember
         postList:[],
@@ -35,7 +34,6 @@ class Posts extends Component{
         const data = {
             title:this.state.title,
             body:this.state.body,
-            num_fu:this.state.num_fu,
             tag:this.state.tag,
             user_id:this.state.user_id,
         }
@@ -68,7 +66,7 @@ class Posts extends Component{
                 </StyledCreatePost>
                 <StyledPost>
                     {this.state.postList && this.state.postList.map(post => (
-                    <PostTile key={post.id} id={post.id} body={post.body} num_fu={post.num_fu} tag={post.tag} title={post.title}/>
+                    <PostTile key={post.id} id={post.id} body={post.body} num_fu={post.num_fu} tag={post.tag} title={post.title} date_created={post.date_created}/>
                     ))}
                 </StyledPost>
             </div>

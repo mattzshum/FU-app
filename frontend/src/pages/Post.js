@@ -32,7 +32,7 @@ const Post = ({ match }) => {
             </StyledCreateComment>
             <StyledComment>
                 {comments && comments.map(comment => (
-                    <div key={comment.id}> <CommentTile id={comment.id} body={comment.body} post_id={comment.post_id} prev={comment.prev} user_id={comment.user_id}/> </div>
+                    <div key={comment.id}> <CommentTile id={comment.id} body={comment.body} post_id={comment.post_id} prev={comment.prev} user_id={comment.user_id} date_created={comment.date_created}/> </div>
                 ))}
             </StyledComment>
         </div>

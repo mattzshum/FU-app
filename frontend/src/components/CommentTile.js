@@ -35,6 +35,7 @@ class CommentTile extends Component{
                 {/* <h3>Post ID: {this.props.post_id}</h3> */}
                 <p><Link id='specific_comment' to={`/comments/${this.props.id}`}>{this.props.body}</Link></p>
                 <p><i>-{this.state.user.u_name}</i></p>
+                <p>commented on: {this.props.date_created}</p>
                 <form onSubmit={this.handleSubmit}>
                     <button className='arrow' type='submit'>DELETE</button>
                 </form>

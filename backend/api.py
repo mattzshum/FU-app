@@ -485,26 +485,6 @@ def create_app(test_config=None):
             abort(422)
             print(f'Error Code 422 {E}')
     
-    # @app.route('/comments/user-comments/<int:user_id>', methods=['GET'])
-    # def user_comments(user_id):
-    #     try:
-    #         comments = Comment.query.filter(Comment.user_id == user_id).all()
-
-    #         if comments is None:
-    #             return jsonify({
-    #                 'success':True,
-    #                 'comments':[],
-    #                 'num_comments':0
-    #             })
-            
-    #         return jsonify({
-    #             'success':True,
-    #             'comments':[comment.format() for comment in comments],
-    #             'num_comments':len(comments)
-    #         })
-    #     except Exception as E:
-    #         print(f'Error Codd 422 {E}')
-    #         abort(422)
     
     '''
     -----create_comment()
@@ -565,18 +545,22 @@ def create_app(test_config=None):
         except Exception as E:
             abort(422)
             print(f'Error Code 422 {E}')
+    
+    @app.route('/comments/fuck_comment/<int:comment_id>', methods=['PUT'])
+    def fuck_comment(comment_id):
+        try:
+            comment = Comment.query.filter(Comment.id == comment_id).one_or_none()
 
+            if comment is None:
+                print('Could not find comment to upvote')
+                abort(404)
+            
+            setattr(comment, 'num_fu', comment.num_fu+1)
+            comment.update()
+        except Exception as E:
+            print(f'Error Code 422 {E}')
+            abort(422)
 
-    #NO CONTENT 204
-    # @app.errorhandler(204)
-    # def no_content(error):
-    #     return jsonify({
-    #         'success':True,
-    #         'error':204,
-    #         'message':'No Content. Request was completed successfully and there is no data to return in response.'
-    #     })
-
-    #NOT FOUND 404
     @app.errorhandler(404)
     def not_found(error):
       return jsonify({

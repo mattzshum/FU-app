@@ -211,10 +211,10 @@ class Post(db.Model):
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     comments = db.relationship('Comment',backref='Comments',lazy=True)
 
-    def __init__(self, title, body, num_fu, tag, user_id):
+    def __init__(self, title, body, tag, user_id):
         self.title = title
         self.body = body
-        self.num_fu = num_fu
+        self.num_fu = 0
         self.tag = tag
         self.user_id = user_id
         self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
@@ -256,6 +256,7 @@ class Comment(db.Model):
     body = Column(String, nullable=False)
     prev = Column(Integer)
     date_created = Column(DateTime(), nullable=False)
+    num_fu = Column(Integer, nullable = False)
     post_id = Column(Integer, ForeignKey('Post.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('User.id'), nullable=False)
     
@@ -265,6 +266,7 @@ class Comment(db.Model):
         self.post_id = post_id
         self.user_id = user_id
         self.date_created = datetime.now(timezone('UTC')).astimezone(timezone('US/Pacific'))
+        self.num_fu = 0
 
     def insert(self):
         try:
@@ -293,4 +295,5 @@ class Comment(db.Model):
             'post_id':self.post_id,
             'user_id':self.user_id,
             'date_created':self.date_created,
+            'num_fu':self.num_fu;
         }
